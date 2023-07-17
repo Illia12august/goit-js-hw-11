@@ -11,22 +11,24 @@ const inputEl = document.querySelector('input[name="searchQuery"]');
 const formEl = document.querySelector('.search-form');
 const gallery = document.querySelector('.gallery');
 const loadMoreButton = document.querySelector('.more-btn');
-
-formEl.addEventListener('submit', async function(event) {
+loadMoreButton.style.display = 'none';
+formEl.addEventListener('submit', async function (event) {
   event.preventDefault();
   clearGallery();
   page = 1;
   await getImage();
 });
 
-loadMoreButton.addEventListener('click', async function() {
+loadMoreButton.addEventListener('click', async function () {
   page++;
   await getImage();
 });
 
 function getApiUrl(searchQuery, page) {
   const baseUrl = 'https://pixabay.com/api/';
-  const queryParams = `?key=${API_KEY}&q=${encodeURIComponent(searchQuery)}&image_type=photo&orientation=horizontal&safesearch=true&per_page=${perPage}&page=${page}`;
+  const queryParams = `?key=${API_KEY}&q=${encodeURIComponent(
+    searchQuery
+  )}&image_type=photo&orientation=horizontal&safesearch=true&per_page=${perPage}&page=${page}`;
   return baseUrl + queryParams;
 }
 
@@ -82,15 +84,17 @@ function renderImageCard(image) {
 
 async function getImage() {
   const searchQuery = inputEl.value;
-  loadMoreButton.style.display = 'block';
-
-  if (searchQuery) {
+  if (!searchQuery.trim()) {
+    loadMoreButton.style.display = 'none';
+  }
+  if (searchQuery.trim()) {
+    loadMoreButton.style.display = 'block';
     try {
       const response = await axios.get(getApiUrl(searchQuery, page));
       console.log(response);
       const data = response.data;
 
-       if (data.totalHits === 0) {
+      if (data.totalHits === 0) {
         showNotification('No images found');
         loadMoreButton.style.display = 'none';
       } else {
@@ -99,7 +103,9 @@ async function getImage() {
 
         if (page * perPage >= totalHits) {
           loadMoreButton.style.display = 'none';
-          showNotification("We're sorry, but you've reached the end of search results.");
+          showNotification(
+            "We're sorry, but you've reached the end of search results."
+          );
         }
       }
     } catch (error) {

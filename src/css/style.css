@@ -56,9 +56,11 @@ body {
 }
 .gallery {
     display: flex;
-    justify-content: space-between;
+    align-items: center;
+    justify-content: start;
+    gap: 50px;
     flex-wrap: wrap;
-    margin: 30 auto;
+    margin: 30px 50px;
   }
   
   .photo-card {
